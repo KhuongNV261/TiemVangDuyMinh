@@ -10,13 +10,28 @@ const PORT = process.env.PORT || 3000;
 const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_URL;
 const DATA_FILE = isVercel ? path.join('/tmp', 'data.json') : path.join(__dirname, 'data.json');
 
-// ─── Redis (Vercel KV / Upstash) – dùng để lưu dữ liệu vĩnh viễn ─────────────
+// ─── Database (Postgres / Redis) – dùng để lưu dữ liệu vĩnh viễn ─────────────
 let redis = null;
+let pgClient = null;
+
 try {
   const redisUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
   const redisToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
-  
-  if (redisUrl && redisToken) {
+  const pgUrl = process.env.POSTGRES_URL;
+
+  if (pgUrl) {
+    const { Client } = require('pg');
+    pgClient = new Client({ connectionString: pgUrl, ssl: { rejectUnauthorized: false } });
+    pgClient.connect().then(() => {
+      return pgClient.query(`
+        CREATE TABLE IF NOT EXISTS gold_store (
+          key VARCHAR(50) PRIMARY KEY,
+          data JSONB
+        )
+      `);
+    }).then(() => console.log('✅ Dùng Postgres Database (Neon)'))
+      .catch(e => console.log('⚠️ Lỗi kết nối Postgres:', e.message));
+  } else if (redisUrl && redisToken) {
     const { Redis } = require('@upstash/redis');
     redis = new Redis({
       url: redisUrl,
@@ -27,7 +42,7 @@ try {
     console.log('📁 Dùng file data.json (local)');
   }
 } catch (e) {
-  console.warn('⚠️  Redis không khả dụng, dùng file:', e.message);
+  console.warn('⚠️  Database không khả dụng, dùng file:', e.message);
 }
 
 // ─── Default data ─────────────────────────────────────────────────────────────
@@ -46,6 +61,11 @@ const DEFAULT_DATA = {
 // ─── Data helpers (async, hỗ trợ cả Redis lẫn file) ─────────────────────────
 async function readData() {
   try {
+    if (pgClient) {
+      const res = await pgClient.query("SELECT data FROM gold_store WHERE key = 'gold:data'");
+      if (res.rows.length > 0) return res.rows[0].data;
+      return DEFAULT_DATA;
+    }
     if (redis) {
       const d = await redis.get('gold:data');
       return d || DEFAULT_DATA;
@@ -64,7 +84,13 @@ async function readData() {
 }
 
 async function writeData(data) {
-  if (redis) {
+  if (pgClient) {
+    await pgClient.query(
+      `INSERT INTO gold_store (key, data) VALUES ('gold:data', $1) 
+       ON CONFLICT (key) DO UPDATE SET data = $1`,
+      [data]
+    );
+  } else if (redis) {
     await redis.set('gold:data', data);
   } else {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
