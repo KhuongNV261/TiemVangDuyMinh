@@ -1,5 +1,5 @@
 const express = require('express');
-const session = require('express-session');
+const session = require('cookie-session');
 const bcrypt = require('bcryptjs');
 const rateLimit = require('express-rate-limit');
 const fs = require('fs');
@@ -74,10 +74,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
+  name: 'session',
   secret: process.env.SESSION_SECRET || 'vangbacduyminh-secret-key-2026',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false, maxAge: 1000 * 60 * 60 * 8 }
+  maxAge: 1000 * 60 * 60 * 8
 }));
 
 const loginLimiter = rateLimit({
@@ -116,7 +115,7 @@ app.post('/api/login', loginLimiter, async (req, res) => {
 });
 
 app.post('/api/logout', (req, res) => {
-  req.session.destroy();
+  req.session = null;
   res.json({ success: true });
 });
 
