@@ -30,12 +30,12 @@ try {
 // ─── Default data ─────────────────────────────────────────────────────────────
 const DEFAULT_DATA = {
   password: '$2a$10$MRexv1PyHXayPxFUU6Akhuvui9ps7ekp0xlFm.aX9wwtgoy83pvwO',
-  ticker: '🏅 DNTN Vàng Bạc Trang Sức Duy Mịnh ◆ Địa chỉ: TP. Hồ Chí Minh ◆ Hotline: 0909 000 000 ◆ Mua bán vàng nguyên liệu · Trang sức · Kim cương ◆ Giá cập nhật liên tục mỗi ngày',
+  ticker: '🏅 DNTN Vàng Bạc Trang Sức Duy Mịnh ◆ Địa chỉ: 242 Triệu Việt Vương, Giao Ninh, Ninh Bình ◆ Hotline: 0915 541 933 ◆ Mua bán vàng nguyên liệu · Trang sức ◆ Giá cập nhật liên tục mỗi ngày',
   goldItems: [
     { id: 1, name: 'VÀNG 99.9', buyPrice: 13750, sellPrice: 14000, enabled: true },
-    { id: 2, name: 'VÀNG 610',  buyPrice: 0,     sellPrice: 0,     enabled: true },
-    { id: 3, name: 'VÀNG 10K',  buyPrice: 0,     sellPrice: 0,     enabled: true },
-    { id: 4, name: 'BẠC',       buyPrice: 0,     sellPrice: 0,     enabled: true }
+    { id: 2, name: 'VÀNG 610',  buyPrice: 0,     sellPrice: 0,     enabled: false },
+    { id: 3, name: 'VÀNG 10K',  buyPrice: 0,     sellPrice: 0,     enabled: false },
+    { id: 4, name: 'BẠC',       buyPrice: 0,     sellPrice: 0,     enabled: false }
   ],
   lastUpdated: new Date().toISOString()
 };
