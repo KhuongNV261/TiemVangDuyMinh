@@ -20,17 +20,15 @@ try {
   const pgUrl = process.env.POSTGRES_URL;
 
   if (pgUrl) {
-    const { Client } = require('pg');
-    pgClient = new Client({ connectionString: pgUrl, ssl: { rejectUnauthorized: false } });
-    pgClient.connect().then(() => {
-      return pgClient.query(`
-        CREATE TABLE IF NOT EXISTS gold_store (
-          key VARCHAR(50) PRIMARY KEY,
-          data JSONB
-        )
-      `);
-    }).then(() => console.log('✅ Dùng Postgres Database (Neon)'))
-      .catch(e => console.log('⚠️ Lỗi kết nối Postgres:', e.message));
+    const { Pool } = require('pg');
+    pgClient = new Pool({ connectionString: pgUrl, ssl: { rejectUnauthorized: false } });
+    pgClient.query(`
+      CREATE TABLE IF NOT EXISTS gold_store (
+        key VARCHAR(50) PRIMARY KEY,
+        data JSONB
+      )
+    `).then(() => console.log('✅ Dùng Postgres Database (Neon)'))
+      .catch(e => console.log('⚠️ Lỗi tạo bảng Postgres:', e.message));
   } else if (redisUrl && redisToken) {
     const { Redis } = require('@upstash/redis');
     redis = new Redis({
