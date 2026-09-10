@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin – Vàng Bạc Duy Mịnh</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --surface: #1a1a24;
+      --surface2: #22222f;
+      --border: #2e2e40;
+      --accent: #f5c518;
+      --accent2: #e8a800;
+      --text: #e8e8f0;
+      --text-muted: #8888a8;
+      --danger: #e84040;
+      --success: #30c078;
+      --red-brand: #cc0000;
+      --shadow: 0 4px 24px rgba(0,0,0,0.5);
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Login Screen ── */
+    #loginScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(ellipse at center, #1a0a00 0%, #0f0f13 70%);
+    }
+
+    .login-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: var(--shadow), 0 0 60px rgba(245,197,24,0.06);
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .login-logo .icon {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .login-logo h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 1px;
+    }
+
+    .login-logo p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(245,197,24,0.1);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #000;
+    }
+
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245,197,24,0.35); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    .btn-danger {
+      background: rgba(232,64,64,0.1);
+      color: var(--danger);
+      border: 1px solid rgba(232,64,64,0.3);
+    }
+
+    .btn-danger:hover { background: rgba(232,64,64,0.2); }
+
+    .btn-sm {
+      width: auto;
+      padding: 7px 14px;
+      font-size: 0.82rem;
+    }
+
+    .error-msg {
+      background: rgba(232,64,64,0.1);
+      border: 1px solid rgba(232,64,64,0.3);
+      color: #ff8080;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .success-msg {
+      background: rgba(48,192,120,0.1);
+      border: 1px solid rgba(48,192,120,0.3);
+      color: var(--success);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* ── Admin Panel ── */
+    #adminPanel { display: none; }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .topbar-brand .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .topbar-brand span {
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .main-content {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .section-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── Gold Items ── */
+    .items-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .item-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .item-card:hover {
+      border-color: rgba(245,197,24,0.3);
+      box-shadow: 0 2px 16px rgba(245,197,24,0.07);
+    }
+
+    .item-card.disabled {
+      opacity: 0.5;
+    }
+
+    .item-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .item-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(245,197,24,0.1);
+      border: 1px solid rgba(245,197,24,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .item-name-display {
+      flex: 1;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Toggle switch */
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .toggle-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      left: 2px;
+      top: 2px;
+      transition: 0.3s;
+    }
+
+    .toggle input:checked + .toggle-slider {
+      background: rgba(48,192,120,0.2);
+      border-color: var(--success);
+    }
+
+    .toggle input:checked + .toggle-slider::before {
+      background: var(--success);
+      transform: translateX(20px);
+    }
+
+    .item-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .field-group input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .field-group input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(245,197,24,0.1);
+    }
+
+    /* ── Change Password Section ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pwd-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Toast notifications ── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: var(--text);
+      font-size: 0.9rem;
+      box-shadow: var(--shadow);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 9999;
+      min-width: 240px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    #toast.success { border-color: var(--success); }
+    #toast.error { border-color: var(--danger); }
+
+    /* ── Save bar ── */
+    .save-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 200;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+    }
+
+    .save-bar-hint {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .save-bar .btn {
+      width: auto;
+      padding: 10px 28px;
+    }
+
+    /* Link to display */
+    .view-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      transition: all 0.2s;
+    }
+
+    .view-link:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* ── Ticker textarea ── */
+    .ticker-field {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 0.88rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      resize: vertical;
+      min-height: 72px;
+      line-height: 1.5;
+      transition: border-color 0.2s;
+      margin-bottom: 12px;
+    }
+    .ticker-field:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(245,197,24,0.1);
+    }
+    .ticker-preview {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 7px 12px;
+      margin-bottom: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ticker-preview span { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      .item-fields { grid-template-columns: 1fr 1fr; }
+      .pwd-fields { grid-template-columns: 1fr; }
+      .topbar { padding: 0 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════════════════════════════════════════╗
+     ║  LOGIN SCREEN                                                          ║
+     ╚══════════════════════════════════════════════════════════════════════════╝ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="icon">🏅</span>
+      <h1>VÀNG BẠC DUY MỊNH</h1>
+      <p>Trang quản trị nội bộ</p>
+    </div>
+
+    <div class="error-msg" id="loginError"></div>
+
+    <div class="form-group">
+      <label for="loginPassword">Mật khẩu</label>
+      <input type="password" id="loginPassword" placeholder="Nhập mật khẩu..." autocomplete="current-password" />
+    </div>
+
+    <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">
+      <span>🔓</span> Đăng nhập
+    </button>
+
+    <div style="text-align:center; margin-top:18px;">
+      <a href="/" class="view-link">← Xem bảng giá</a>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════════════════════╗
+     ║  ADMIN PANEL                                                           ║
+     ╚══════════════════════════════════════════════════════════════════════════╝ -->
+<div id="adminPanel">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="dot"></div>
+      <span>QUẢN TRỊ GIÁ VÀNG</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-secondary btn-sm" onclick="triggerDeploy()" id="deployBtn" style="border-color: var(--success); color: var(--success);">🚀 Deploy Vercel</button>
+      <a href="/" target="_blank" class="view-link">👁 Xem bảng giá</a>
+      <button class="btn btn-secondary btn-sm" id="logoutBtn" onclick="doLogout()">Đăng xuất</button>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main-content">
+
+    <!-- Section: Gold Items -->
+    <div class="section-header">
+      <div>
+        <div class="section-title">📊 Bảng giá vàng</div>
+        <div class="section-subtitle">Bật/tắt hiển thị và cập nhật giá cho từng loại vàng</div>
+      </div>
+    </div>
+
+    <div class="items-grid" id="itemsGrid">
+      <!-- Items rendered by JS -->
+    </div>
+
+    <!-- Section: Ticker -->
+    <div class="card" style="margin-bottom: 20px;">
+      <div class="card-title">📢 Thanh chạy (Ticker)</div>
+      <div class="section-subtitle" style="margin-bottom:14px;color:var(--text-muted);font-size:0.82rem;">Nội dung hiển thị chạy nằm ngang phía trên trang giá vàng</div>
+      <div class="success-msg" id="tickerSuccess"></div>
+      <div class="error-msg" id="tickerError"></div>
+      <textarea class="ticker-field" id="tickerInput" placeholder="Nhập nội dung ticker..."></textarea>
+      <div class="ticker-preview" id="tickerPreview"><span>►</span> Nội dung xem trước...</div>
+      <button class="btn btn-secondary btn-sm" onclick="saveTicker()">💾 Lưu ticker</button>
+    </div>
+
+    <!-- Section: Change Password -->
+    <div class="card" style="margin-bottom: 100px;">
+      <div class="card-title">🔐 Đổi mật khẩu</div>
+      <div class="success-msg" id="pwdSuccess"></div>
+      <div class="error-msg" id="pwdError"></div>
+      <div class="pwd-fields">
+        <div class="form-group" style="margin:0">
+          <label>Mật khẩu hiện tại</label>
+          <input type="password" id="currentPwd" placeholder="••••••••" />
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>Mật khẩu mới</label>
+          <input type="password" id="newPwd" placeholder="Tối thiểu 4 ký tự" />
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="changePassword()">💾 Đổi mật khẩu</button>
+    </div>
+  </div>
+
+  <!-- Save bar -->
+  <div class="save-bar">
+    <span class="save-bar-hint" id="saveHint">Chỉnh sửa giá và nhấn Lưu để cập nhật bảng hiển thị</span>
+    <button class="btn btn-primary" style="width:auto; padding: 10px 32px;" onclick="saveAll()">
+      💾 Lưu tất cả
+    </button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+  // ── Toast ──────────────────────────────────────────────────────────────────
+  let toastTimer;
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.innerHTML = (type === 'success' ? '✅ ' : '❌ ') + msg;
+    t.className = 'show ' + type;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.className = ''; }, 3500);
+  }
+
+  // ── Auth ───────────────────────────────────────────────────────────────────
+  async function checkAuth() {
+    const resp = await fetch('/api/auth/check');
+    const data = await resp.json();
+    if (data.authenticated) {
+      showAdminPanel();
+    }
+  }
+
+  async function doLogin() {
+    const pwd = document.getElementById('loginPassword').value.trim();
+    const errEl = document.getElementById('loginError');
+    const btn = document.getElementById('loginBtn');
+
+    if (!pwd) {
+      errEl.textContent = 'Vui lòng nhập mật khẩu.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Đang đăng nhập...';
+    errEl.style.display = 'none';
+
+    try {
+      const resp = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pwd })
+      });
+      const data = await resp.json();
+
+      if (resp.ok) {
+        showAdminPanel();
+      } else {
+        errEl.textContent = data.error || 'Mật khẩu không đúng.';
+        errEl.style.display = 'block';
+        document.getElementById('loginPassword').value = '';
+        document.getElementById('loginPassword').focus();
+      }
+    } catch (e) {
+      errEl.textContent = 'Lỗi kết nối. Vui lòng thử lại.';
+      errEl.style.display = 'block';
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<span>🔓</span> Đăng nhập';
+  }
+
+  async function doLogout() {
+    await fetch('/api/logout', { method: 'POST' });
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('loginPassword').value = '';
+  }
+
+  function showAdminPanel() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    loadItems();
+    loadTicker();
+  }
+
+  // ── Items ──────────────────────────────────────────────────────────────────
+  let items = [];
+
+  async function loadItems() {
+    const resp = await fetch('/api/admin/items');
+    if (!resp.ok) return;
+    const data = await resp.json();
+    items = data.items;
+    renderItems();
+  }
+
+  function renderItems() {
+    const grid = document.getElementById('itemsGrid');
+    grid.innerHTML = '';
+
+    items.forEach((item, idx) => {
+      const card = document.createElement('div');
+      card.className = 'item-card' + (item.enabled ? '' : ' disabled');
+      card.id = `card-${item.id}`;
+
+      card.innerHTML = `
+        <div class="item-top">
+          <div class="item-number">${idx + 1}</div>
+          <div class="item-name-display" id="nameDisplay-${item.id}">${item.name}</div>
+          <div class="toggle-wrap">
+            <span class="toggle-label" id="toggleLabel-${item.id}">${item.enabled ? 'Hiển thị' : 'Ẩn'}</span>
+            <label class="toggle">
+              <input type="checkbox" id="toggle-${item.id}" ${item.enabled ? 'checked' : ''} 
+                     onchange="onToggle(${item.id}, this.checked)" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="item-fields">
+          <div class="field-group">
+            <label>Tên hiển thị</label>
+            <input type="text" id="name-${item.id}" value="${item.name}"
+                   oninput="syncName(${item.id})" />
+          </div>
+          <div class="field-group">
+            <label>Giá mua (nghìn đồng)</label>
+            <input type="number" id="buy-${item.id}" value="${item.buyPrice}" min="0" step="1" />
+          </div>
+          <div class="field-group">
+            <label>Giá bán (nghìn đồng)</label>
+            <input type="number" id="sell-${item.id}" value="${item.sellPrice}" min="0" step="1" />
+          </div>
+        </div>
+      `;
+
+      grid.appendChild(card);
+    });
+  }
+
+  function onToggle(id, checked) {
+    const card = document.getElementById(`card-${id}`);
+    const label = document.getElementById(`toggleLabel-${id}`);
+    card.className = 'item-card' + (checked ? '' : ' disabled');
+    label.textContent = checked ? 'Hiển thị' : 'Ẩn';
+  }
+
+  function syncName(id) {
+    const val = document.getElementById(`name-${id}`).value;
+    document.getElementById(`nameDisplay-${id}`).textContent = val || '—';
+  }
+
+  async function saveAll() {
+    const updatedItems = items.map(item => ({
+      id: item.id,
+      name: document.getElementById(`name-${item.id}`).value.trim() || item.name,
+      buyPrice: parseFloat(document.getElementById(`buy-${item.id}`).value) || 0,
+      sellPrice: parseFloat(document.getElementById(`sell-${item.id}`).value) || 0,
+      enabled: document.getElementById(`toggle-${item.id}`).checked
+    }));
+
+    // Basic validation
+    for (const it of updatedItems) {
+      if (!it.name) { showToast('Tên không được để trống!', 'error'); return; }
+    }
+
+    const hint = document.getElementById('saveHint');
+    hint.textContent = 'Đang lưu...';
+
+    try {
+      const resp = await fetch('/api/admin/items', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: updatedItems })
+      });
+
+      if (resp.ok) {
+        items = updatedItems;
+        renderItems();
+        showToast('Đã lưu bảng giá thành công!');
+        hint.textContent = 'Đã lưu • ' + new Date().toLocaleTimeString('vi-VN');
+      } else {
+        const err = await resp.json();
+        showToast(err.error || 'Lỗi khi lưu!', 'error');
+        hint.textContent = 'Lỗi khi lưu';
+      }
+    } catch (e) {
+      showToast('Lỗi kết nối!', 'error');
+    }
+  }
+
+  // ── Ticker ────────────────────────────────────────────────────────────
+  async function loadTicker() {
+    try {
+      const r = await fetch('/api/admin/ticker');
+      if (!r.ok) return;
+      const d = await r.json();
+      const ta = document.getElementById('tickerInput');
+      ta.value = d.ticker || '';
+      updateTickerPreview();
+      ta.addEventListener('input', updateTickerPreview);
+    } catch(e) {}
+  }
+
+  function updateTickerPreview() {
+    const val = document.getElementById('tickerInput').value.trim();
+    document.getElementById('tickerPreview').innerHTML =
+      `<span>►</span> ${val || '<em>Trống...</em>'}`;
+  }
+
+  async function saveTicker() {
+    const ticker = document.getElementById('tickerInput').value.trim();
+    const okEl  = document.getElementById('tickerSuccess');
+    const errEl = document.getElementById('tickerError');
+    okEl.style.display = 'none';
+    errEl.style.display = 'none';
+
+    try {
+      const r = await fetch('/api/admin/ticker', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ticker })
+      });
+      const d = await r.json();
+      if (r.ok) {
+        okEl.textContent = '✅ Đã lưu ticker thành công!';
+        okEl.style.display = 'block';
+        showToast('Ticker đã cập nhật!');
+      } else {
+        errEl.textContent = d.error || 'Lỗi khi lưu.';
+        errEl.style.display = 'block';
+      }
+    } catch(e) {
+      errEl.textContent = 'Lỗi kết nối.';
+      errEl.style.display = 'block';
+    }
+  }
+
+  // ── Change Password ───────────────────────────────────────────────────
+  async function changePassword() {
+    const cur = document.getElementById('currentPwd').value;
+    const nw = document.getElementById('newPwd').value;
+    const errEl = document.getElementById('pwdError');
+    const okEl = document.getElementById('pwdSuccess');
+    errEl.style.display = 'none';
+    okEl.style.display = 'none';
+
+    if (!cur || !nw) {
+      errEl.textContent = 'Vui lòng điền đầy đủ.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    if (nw.length < 4) {
+      errEl.textContent = 'Mật khẩu mới phải có ít nhất 4 ký tự.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    try {
+      const resp = await fetch('/api/admin/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPassword: cur, newPassword: nw })
+      });
+
+      const data = await resp.json();
+
+      if (resp.ok) {
+        okEl.textContent = '✅ ' + data.message;
+        okEl.style.display = 'block';
+        document.getElementById('currentPwd').value = '';
+        document.getElementById('newPwd').value = '';
+        showToast('Đổi mật khẩu thành công!');
+      } else {
+        errEl.textContent = data.error;
+        errEl.style.display = 'block';
+      }
+    } catch (e) {
+      errEl.textContent = 'Lỗi kết nối.';
+      errEl.style.display = 'block';
+    }
+  }
+
+  // ── Deploy ────────────────────────────────────────────────────────────
+  async function triggerDeploy() {
+    const btn = document.getElementById('deployBtn');
+    if (!confirm('Bạn có chắc chắn muốn Deploy bản cập nhật mới nhất lên Vercel không? Quá trình này sẽ mất khoảng 1-2 phút.')) return;
+    
+    btn.disabled = true;
+    btn.textContent = '⏳ Đang gọi...';
+    try {
+      const resp = await fetch('/api/admin/deploy', { method: 'POST' });
+      const data = await resp.json();
+      if (resp.ok) {
+        showToast('🚀 ' + data.message);
+      } else {
+        showToast(data.error || 'Lỗi khi gọi Deploy', 'error');
+      }
+    } catch (e) {
+      showToast('Lỗi kết nối.', 'error');
+    }
+    btn.disabled = false;
+    btn.innerHTML = '🚀 Deploy Vercel';
+  }
+
+  // ── Enter key shortcut ──────────────────────────────────────────────────────
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const ls = document.getElementById('loginScreen');
+      if (ls.style.display !== 'none' && !ls.style.display.includes('none') || ls.style.display === '') {
+        // only if loginScreen visible
+        if (document.activeElement.id === 'loginPassword') doLogin();
+      }
+    }
+  });
+
+  document.getElementById('loginPassword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  // ── Init ───────────────────────────────────────────────────────────────────
+  checkAuth();
+</script>
+</body>
+</html>

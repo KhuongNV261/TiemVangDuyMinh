@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DNTN Vàng Bạc Trang Sức Duy Mịnh – Bảng Giá Vàng Hôm Nay</title>
+  <meta name="description" content="Bảng giá vàng hôm nay của DNTN Vàng Bạc Trang Sức Duy Mịnh." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:           #600E0E;
+      --bg-card:      #5C1212;
+      --bg-row-odd:   #641414;
+      --bg-row-even:  #581212;
+      --gold:         #C9A84C;
+      --gold-light:   #E2C77A;
+      --gold-dim:     #9B7E40;
+      --cream:        #F5ECD7;
+      --buy:          #29A876;
+      --sell:         #E0742A;
+      --border:       #7E2020;
+      --muted:        rgba(245,236,215,0.45);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      background-image: radial-gradient(ellipse at 50% 0%, #A02525 0%, #600E0E 55%, #4A0A0A 100%);
+      font-family: 'Inter', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Corner Logo ── */
+    .corner-logo {
+      position: fixed;
+      top: 12px;
+      left: 16px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .corner-logo:hover { opacity: 1; }
+    .corner-logo img {
+      width: 34px;
+      height: 34px;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+    .corner-logo-text {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 500;
+      color: var(--gold-dim);
+      letter-spacing: 1px;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+    @media (max-width: 480px) {
+      .corner-logo-text { display: none; }
+    }
+
+    /* ── Ticker ── */
+    .ticker-wrap {
+      width: 100%;
+      background: linear-gradient(90deg, #4A1010, #6A1818, #4A1010);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-inner {
+      display: inline-block;
+      animation: tickerScroll 40s linear infinite;
+      padding-left: 100%;
+    }
+    .ticker-inner span {
+      font-size: 0.78rem;
+      color: var(--gold-dim);
+      letter-spacing: 0.5px;
+    }
+    .ticker-inner .sep { color: var(--gold); margin: 0 14px; }
+    @keyframes tickerScroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ── Header ── */
+    .header {
+      width: 100%;
+      text-align: center;
+      padding: 14px 16px 10px;
+    }
+
+    /* Ornament */
+    .ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .orn-line {
+      height: 1px;
+      width: 56px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim));
+    }
+    .orn-line.r { background: linear-gradient(90deg, var(--gold-dim), transparent); }
+    .orn-dot {
+      width: 5px; height: 5px;
+      background: var(--gold);
+      transform: rotate(45deg);
+    }
+
+    /* Shop name */
+    .shop-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 4.5vw, 2.4rem);
+      font-weight: 900;
+      color: var(--gold-light);
+      letter-spacing: 1px;
+      line-height: 1.2;
+      text-shadow: 0 2px 24px rgba(201,168,76,0.3);
+      margin-bottom: 6px;
+    }
+
+    /* Tagline — plain text, no box */
+    .shop-tagline {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(0.68rem, 1.8vw, 0.85rem);
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* ── Clock block — clean, no badge styling ── */
+    .clock-block {
+      margin-bottom: 12px;
+    }
+    .clock-time {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(1.3rem, 4vw, 2rem);
+      font-weight: 600;
+      color: var(--cream);
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+    .clock-time .ampm {
+      font-size: 0.6em;
+      color: var(--gold);
+      margin-right: 3px;
+      vertical-align: middle;
+    }
+    .clock-time .sep { color: var(--gold-dim); margin: 0 10px; opacity: 0.5; }
+    .clock-date {
+      font-size: clamp(0.75rem, 2vw, 0.9rem);
+      color: var(--muted);
+      margin-top: 5px;
+      letter-spacing: 0.3px;
+    }
+
+    /* Title line above table — plain gold text, no border-box */
+    .table-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(0.78rem, 2vw, 1rem);
+      font-weight: 500;
+      color: var(--gold-dim);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    /* ── Table — WIDE & BIG for distance viewing ── */
+    .table-wrapper {
+      width: 100%;
+      max-width: 98vw;
+      padding: 0 8px 6px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .table-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 8px 48px rgba(0,0,0,0.5), 0 0 40px rgba(201,168,76,0.08);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .price-table {
+      width: 100%;
+      border-collapse: collapse;
+      flex: 1;
+      height: 100%;
+    }
+
+    /* Header row */
+    .price-table thead tr {
+      background: linear-gradient(135deg, #7A1C1C, #521010);
+      border-bottom: 2px solid var(--gold-dim);
+    }
+    .price-table thead th {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 24px 16px;
+      text-align: center;
+    }
+    .price-table thead th:first-child {
+      text-align: left;
+      padding-left: 40px;
+    }
+
+    /* Body rows */
+    .price-table tbody tr {
+      border-bottom: 1px solid rgba(126,32,32,0.5);
+      transition: background 0.2s;
+    }
+    .price-table tbody tr:nth-child(odd)  { background: var(--bg-row-odd); }
+    .price-table tbody tr:nth-child(even) { background: var(--bg-row-even); }
+    .price-table tbody tr:last-child { border-bottom: none; }
+    .price-table tbody tr:hover { background: rgba(201,168,76,0.07); }
+
+    /* Name cell */
+    .col-name {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(1.3rem, 3.2vw, 2rem);
+      font-weight: 600;
+      color: var(--cream);
+      text-align: left;
+      padding: 0 16px 0 40px;
+      letter-spacing: 1.5px;
+      width: 36%;
+      height: 1px; /* allows row to stretch */
+    }
+
+    /* Price cells */
+    .col-buy, .col-sell {
+      text-align: center;
+      padding: 0 16px;
+      width: 32%;
+      height: 1px; /* allows row to stretch */
+    }
+    .col-buy { border-left: 1px solid rgba(126,32,32,0.5); }
+    .col-sell { border-left: 1px solid rgba(126,32,32,0.5); }
+
+    /* Price number — BIG for distance */
+    .price-val {
+      display: block;
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(2.4rem, 6.5vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1;
+    }
+    .price-val.buy  { color: var(--buy); }
+    .price-val.sell { color: var(--sell); }
+
+    .price-unit {
+      display: block;
+      font-size: clamp(0.65rem, 1.2vw, 0.78rem);
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      margin-top: 5px;
+    }
+    .price-empty {
+      font-size: 1.6rem;
+      color: rgba(245,236,215,0.18);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+    }
+
+    /* Flash on price change */
+    @keyframes flash {
+      0%,100% { background: transparent; }
+      40%      { background: rgba(201,168,76,0.15); }
+    }
+    .flash { animation: flash 0.9s ease; }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      margin-top: 4px;
+      margin-bottom: 2px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .legend-dot.buy  { background: var(--buy); }
+    .legend-dot.sell { background: var(--sell); }
+
+    /* ── Footer ── */
+    .footer {
+      padding: 4px 20px 6px;
+      text-align: center;
+    }
+    .footer-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .live-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--buy);
+      animation: blink 2.5s infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity:1; }
+      50%      { opacity:0.25; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Corner logo -->
+  <div class="corner-logo">
+    <img src="/logo.jpg" alt="DM" />
+    <div class="corner-logo-text">Vàng Bạc<br>Duy Mịnh</div>
+  </div>
+
+  <!-- Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-inner" id="tickerInner">
+      <span id="tickerText">Đang tải...</span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="ornament">
+      <div class="orn-line"></div>
+      <div class="orn-dot"></div>
+      <div class="orn-dot" style="width:3px;height:3px;opacity:.4"></div>
+      <div class="orn-dot"></div>
+      <div class="orn-line r"></div>
+    </div>
+
+    <h1 class="shop-name">DNTN VÀNG BẠC TRANG SỨC DUY MỊNH</h1>
+    <p class="shop-tagline">Uy tín · Chất lượng · Tận tâm</p>
+
+    <!-- Clock — standalone, no badge box -->
+    <div class="clock-block">
+      <div class="clock-time">
+        <span class="ampm" id="ampm">--</span><span id="t12">--:--</span>
+        <span class="sep">|</span>
+        <span id="t24">--:--:--</span>
+      </div>
+      <div class="clock-date" id="tDate">Ngày -- Tháng -- Năm ----</div>
+    </div>
+
+    <p class="table-title">GIÁ VÀNG HÔM NAY</p>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrapper">
+    <div class="table-card">
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>Loại Vàng</th>
+            <th>Giá Mua</th>
+            <th>Giá Bán</th>
+          </tr>
+        </thead>
+        <tbody id="priceBody">
+          <tr><td colspan="3" style="text-align:center;padding:40px;color:var(--muted);font-style:italic">Đang tải dữ liệu...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot buy"></div><span>Giá mua vào</span></div>
+      <div class="legend-item"><div class="legend-dot sell"></div><span>Giá bán ra</span></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-inner">
+      <div class="live-dot"></div>
+      <span>Tự động cập nhật mỗi 30 giây</span>
+      <span style="opacity:.3;margin:0 4px">|</span>
+      <span id="lastUpdated">--</span>
+    </div>
+  </div>
+
+<script>
+  // ── Clock ──────────────────────────────────────────────────────────────────
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function clock(){
+    const n = new Date();
+    const h12 = n.getHours()%12||12;
+    document.getElementById('ampm').textContent  = (n.getHours()>=12?'PM':'AM')+' ';
+    document.getElementById('t12').textContent   = `${h12}:${pad(n.getMinutes())}`;
+    document.getElementById('t24').textContent   = `${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())}`;
+    document.getElementById('tDate').textContent = `Ngày ${n.getDate()} Tháng ${n.getMonth()+1} Năm ${n.getFullYear()}`;
+  }
+  setInterval(clock,1000); clock();
+
+  // ── Prices ─────────────────────────────────────────────────────────────────
+  let prev = {};
+
+  function fmt(v){
+    // Fix: treat 0 or falsy as empty
+    if(!v || Number(v)===0) return null;
+    return Number(v).toLocaleString('vi-VN');
+  }
+
+  async function fetchPrices(){
+    try{
+      const r = await fetch('/api/prices');
+      if(!r.ok) return;
+      const data = await r.json();
+      render(data.items, data.ticker, data.lastUpdated);
+    }catch(e){ console.warn(e); }
+  }
+
+  function render(items, ticker, lastUpdated){
+    // Update ticker
+    if(ticker) {
+      document.getElementById('tickerText').textContent = ticker + ' ◆ ' + ticker;
+    }
+    const tbody = document.getElementById('priceBody');
+    if(!items||!items.length){
+      tbody.innerHTML='<tr><td colspan="3" style="text-align:center;padding:40px;color:var(--muted);font-style:italic">Chưa có dữ liệu</td></tr>';
+      return;
+    }
+    tbody.innerHTML='';
+    items.forEach(item=>{
+      const bFmt = fmt(item.buyPrice);
+      const sFmt = fmt(item.sellPrice);
+      const k = `i${item.id}`;
+      const bChanged = prev[k] && prev[k].b!==item.buyPrice;
+      const sChanged = prev[k] && prev[k].s!==item.sellPrice;
+      prev[k]={b:item.buyPrice, s:item.sellPrice};
+
+      const tr = document.createElement('tr');
+      tr.innerHTML=`
+        <td class="col-name">${item.name}</td>
+        <td class="col-buy${bChanged?' flash':''}">
+          ${bFmt
+            ? `<span class="price-val buy">${bFmt}</span><span class="price-unit">nghìn đồng / chỉ</span>`
+            : `<span class="price-empty">—</span>`}
+        </td>
+        <td class="col-sell${sChanged?' flash':''}">
+          ${sFmt
+            ? `<span class="price-val sell">${sFmt}</span><span class="price-unit">nghìn đồng / chỉ</span>`
+            : `<span class="price-empty">—</span>`}
+        </td>`;
+      tbody.appendChild(tr);
+    });
+
+    if(lastUpdated){
+      const d=new Date(lastUpdated);
+      document.getElementById('lastUpdated').textContent=
+        `Cập nhật ${d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})} — ${d.toLocaleDateString('vi-VN')}`;
+    }
+  }
+
+  fetchPrices();
+  setInterval(fetchPrices,30000);
+</script>
+</body>
+</html>
