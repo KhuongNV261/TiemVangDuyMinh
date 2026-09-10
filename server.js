@@ -10,16 +10,19 @@ const PORT = process.env.PORT || 3000;
 const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_URL;
 const DATA_FILE = isVercel ? path.join('/tmp', 'data.json') : path.join(__dirname, 'data.json');
 
-// ─── Redis (Upstash) – chỉ dùng khi có env var ────────────────────────────────
+// ─── Redis (Vercel KV / Upstash) – dùng để lưu dữ liệu vĩnh viễn ─────────────
 let redis = null;
 try {
-  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  const redisUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+  const redisToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  
+  if (redisUrl && redisToken) {
     const { Redis } = require('@upstash/redis');
     redis = new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+      url: redisUrl,
+      token: redisToken,
     });
-    console.log('✅ Dùng Upstash Redis');
+    console.log('✅ Dùng Redis Database để lưu dữ liệu vĩnh viễn');
   } else {
     console.log('📁 Dùng file data.json (local)');
   }
